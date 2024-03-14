@@ -3,6 +3,7 @@ import type { Action } from './$types'
 import { lucia } from '$lib/server/auth'
 import { db } from '$lib/server/database'
 import bcrypt from 'bcrypt'
+import { loginSchema } from '$lib/zodSchemas'
 
 // to login a user
 // 		get form data
@@ -13,11 +14,15 @@ import bcrypt from 'bcrypt'
 
 const login: Action = async ({ request, cookies }) => {
 	const formData = await request.formData()
-	const email = String(formData.get('email'))
-	const password = String(formData.get('password'))
+	const result = loginSchema.safeParse(formData)
 
 	//validate form
-	if (!email || !password) return fail(400, { invalid: true })
+	if (!result.success)
+		return fail(400, {
+			data: Object.fromEntries(formData),
+			errors: result.error.flatten().fieldErrors
+		})
+	const { email, password } = result.data
 
 	// if credentials is wrong
 	const user = await db.user.findUnique({ where: { email } })

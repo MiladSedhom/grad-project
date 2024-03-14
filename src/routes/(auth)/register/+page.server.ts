@@ -2,23 +2,20 @@ import { fail, redirect } from '@sveltejs/kit'
 import type { Action } from './$types'
 import { db } from '$lib/server/database'
 import bcrypt from 'bcrypt'
+import { registerSchema } from '$lib/zodSchemas'
 
 const register: Action = async ({ request }) => {
 	const formData = await request.formData()
-	const email = formData.get('email')
-	const username = formData.get('username')
-	const password = formData.get('password')
+
+	const result = registerSchema.safeParse(formData)
 
 	//validate form
-	if (
-		typeof email !== 'string' ||
-		typeof username !== 'string' ||
-		typeof password !== 'string' ||
-		!email ||
-		!username ||
-		!password
-	)
-		return fail(400, { invalid: true })
+	if (!result.success)
+		return fail(400, {
+			data: Object.fromEntries(formData),
+			errors: result.error.flatten().fieldErrors
+		})
+	const { email, username, password } = result.data
 
 	//if ther is a user with the same name return name is already taken
 	const existingEmail = await db.user.findUnique({ where: { email } })
