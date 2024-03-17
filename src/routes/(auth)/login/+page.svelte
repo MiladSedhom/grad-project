@@ -19,7 +19,7 @@
 				<div>
 					<input type="password" name="password" id="password" placeholder="Password" />
 					{#if form?.errors.password}
-						<p class="error">{form.errors.email[0]}</p>
+						<p class="error">{form.errors.password[0]}</p>
 					{/if}
 				</div>
 				<button type="submit">Log in</button>
