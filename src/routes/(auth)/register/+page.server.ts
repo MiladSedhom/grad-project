@@ -20,7 +20,12 @@ const register: Action = async ({ request }) => {
 	//if ther is a user with the same name return name is already taken
 	const existingEmail = await db.user.findUnique({ where: { email } })
 
-	if (existingEmail) return fail(400, { emailTaken: true })
+	if (existingEmail)
+		return fail(400, {
+			errors: {
+				email: 'This email has been registered as an account already.'
+			}
+		})
 
 	//if success return add them to db and log them in
 	try {
