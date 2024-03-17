@@ -41,8 +41,6 @@
 	</div>
 </div>
 
-<pre>{JSON.stringify(form, null, 2)}</pre>
-
 <style>
 	.container {
 		width: 100vw;
@@ -91,7 +89,7 @@
 	}
 
 	p {
-		font-size: 0.875px;
+		font-size: 0.875rem;
 		color: hsl(48 10% 39% / 1);
 	}
 
@@ -140,7 +138,7 @@
 		background-color: #f78208ba;
 	}
 
-	span {
+	form span {
 		font-size: 0.75rem;
 	}
 
